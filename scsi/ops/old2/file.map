@@ -1,0 +1,8 @@
+read_6 read_write
+read_10 read_write
+read_16 read_write
+read_write_6 read_write
+read_write_10 read_write
+read_write_16 read_write
+mode_sense_6 mode_sense
+mode_sense_10 mode_sense

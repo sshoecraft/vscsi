@@ -1,0 +1,153 @@
+
+The PERIPHERAL QUALIFIER field and PERIPHERAL DEVICE TYPE field identify the peripheral device connected to the logical unit. If the SCSI target device is not capable of supporting a peripheral device connected to this logical unit, the device server shall set these fields to 7Fh (i.e., PERIPHERAL QUALIFIER field set to 011b and PERIPHERAL DEVICE TYPE field set to 1Fh).
+
+Peripheral qualifier
+000b A peripheral device having the specified peripheral device type is connected to this logical unit. If the device server is unable to determine whether or not a peripheral device is connected, it also shall use this peripheral qualifier. This peripheral qualifier does not mean that the peripheral device connected to the logical unit is ready for access.
+001b A peripheral device having the specified peripheral device type is not connected to this logical unit. However, the device server is capable of supporting the specified peripheral device type on this logical unit.
+010b Reserved
+011b The device server is not capable of supporting a peripheral device on this logical unit.  For this peripheral qualifier the peripheral device type shall be set to 1Fh. All other peripheral device type values are reserved for this peripheral qualifier.
+100b to 111b Vendor specific
+
+Peripheral device type
+00h SBC-3 Direct access block device (e.g., magnetic disk)
+01h SSC-3 Sequential-access device (e.g., magnetic tape)
+02h SSC Printer device
+03h SPC-2 Processor device
+04h SBC Write-once device (e.g., some optical disks)
+05h MMC-5 CD/DVD device
+06h Scanner device (obsolete)
+07h SBC Optical memory device (e.g., some optical disks)
+08h SMC-3 Media changer device (e.g., jukeboxes)
+09h Communications device (obsolete)
+0Ah to 0Bh Obsolete
+0Ch SCC-2 Storage array controller device (e.g., RAID)
+0Dh SES Enclosure services device
+0Eh RBC Simplified direct-access device (e.g., magnetic disk)
+0Fh OCRW Optical card reader/writer device
+10h BCC Bridge Controller Commands
+11h OSD Object-based Storage Device
+12h ADC-2 Automation/Drive Interface
+13h clause 9 Security manager device
+14h to 1Dh Reserved
+1Eh Well known logical unit b
+1Fh Unknown or no device type
+
+A removable medium (RMB) bit set to zero indicates that the medium is not removable. A RMB bit set to one
+indicates that the medium is removable.
+
+Version
+00h The device does not claim conformance to any standard.
+02h Obsolete
+03h The device complies to ANSI INCITS 301-1997 (SPC).
+04h The device complies to ANSI INCITS 351-2001 (SPC-2).
+05h The device complies to ANSI INCITS 408-2005 (SPC-3).
+06h The device complies to this standard.
+
+The Normal ACA Supported (NORMACA) bit set to one indicates that the device server supports a NACA bit set to
+one in the CDB CONTROL byte and supports the ACA task attribute (see SAM-4). A NORMACA bit set to zero
+indicates that the device server does not support a NACA bit set to one and does not support the ACA task attribute.
+
+A hierarchical support (HISUP) bit set to zero indicates the SCSI target device does not use the hierarchical
+addressing model to assign LUNs to logical units. A HISUP bit set to one indicates the SCSI target device uses the
+hierarchical addressing model to assign LUNs to logical units.
+
+A RESPONSE DATA FORMAT field value of two indicates that the data shall be in the format defined in this standard.
+Response data format values less than two are obsolete. Response data format values greater than two are
+reserved.
+
+The ADDITIONAL LENGTH field indicates the length in bytes of the remaining standard INQUIRY data. The
+relationship between the ADDITIONAL LENGTH field and the CDB ALLOCATION LENGTH field is defined in 4.3.5.6.
+
+An SCC Supported (SCCS) bit set to one indicates that the SCSI target device contains an embedded storage array
+controller component. See SCC-2 for details about storage array controller devices. An SCCS bit set to zero
+indicates that the SCSI target device does not contain an embedded storage array controller component.
+
+An Access Controls Coordinator (ACC) bit set to one indicates that the SCSI target device contains an access
+controls coordinator (see 3.1.4) that may be addressed through this logical unit. An ACC bit set to zero indicates that
+no access controls coordinator may be addressed through this logical unit. If the SCSI target device contains an
+access controls coordinator that may be addressed through any logical unit other than the ACCESS CONTROLS
+well known logical unit (see 8.3), then the ACC bit shall be set to one for LUN 0.
+
+TPGS field
+00b The SCSI target device does not support asymmetric logical unit access or supports a form of asymmetric access that is vendor specific. Neither the REPORT TARGET GROUPS nor the SET TARGET GROUPS commands is supported.
+01b Only implicit asymmetric logical unit access (see 5.8.2.7) is supported. The SCSI target device is capable of changing target port asymmetric access states without a SET TARGET PORT GROUPS command. The REPORT TARGET PORT GROUPS command is supported and the SET TARGET PORT GROUPS command is not supported.
+10b Only explicit asymmetric logical unit access (see 5.8.2.8) is supported. The SCSI target device only changes target port asymmetric access states as requested with the SET TARGET PORT GROUPS command. Both the REPORT TARGET PORT GROUPS command and the SET TARGET PORT GROUPS command are supported.
+11b Both explicit and implicit asymmetric logical unit access are supported. Both the REPORT TARGET PORT
+
+A Third-Party Copy (3PC) bit set to one indicates that the SCSI target device supports third-party copy commands
+such as the EXTENDED COPY command (see 6.3). A 3PC bit set to zero indicates that the SCSI target device
+does not support such commands.
+
+An Enclosure Services (ENCSERV) bit set to one indicates that the SCSI target device contains an embedded
+enclosure services component. See SES for details about enclosure services, including a device model for an
+embedded enclosure services device. An ENCSERV bit set to zero indicates that the SCSI target device does not
+contain an embedded enclosure services component.
+
+A Multi Port (MULTIP) bit set to one indicates that this is a multi-port (two or more ports) SCSI target device and
+conforms to the SCSI multi-port device requirements found in the applicable standards (e.g., SAM-4, a SCSI
+transport protocol standard and possibly provisions of a command standard). A MULTIP bit set to zero indicates that
+this SCSI target device has a single port and does not implement the multi-port requirements.
+
+The CMDQUE bit shall be set to one indicating that the logical unit supports the task management model (see
+SAM-4).
+
+The T10 VENDOR IDENTIFICATION field contains eight bytes of left-aligned ASCII data (see 4.4.1) identifying the
+vendor of the product. The T10 vendor identification shall be one assigned by INCITS. A list of assigned T10
+vendor identifications is in Annex E and on the T10 web site (http://www.t10.org).
+
+The PRODUCT IDENTIFICATION field contains sixteen bytes of left-aligned ASCII data (see 4.4.1) defined by the
+vendor.
+
+The PRODUCT REVISION LEVEL field contains four bytes of left-aligned ASCII data defined by the vendor.
+
+The VERSION DESCRIPTOR fields provide for identifying up to eight standards to which the SCSI target device claims
+conformance. The value in each VERSION DESCRIPTOR field shall be selected from table 135. All version descriptor
+values not listed in table 135 are reserved. Technical Committee T10 of INCITS maintains an electronic copy of the
+information in table 135 on its world wide web site (http://www.t10.org/). In the event that the T10 world wide web
+site is no longer active, access may be possible via the INCITS world wide web site (http://www.incits.org), the
+ANSI world wide web site (http://www.ansi.org), the IEC site (http://www.iec.ch/), the ISO site (http://www.iso.ch/),
+or the ISO/IEC JTC 1 web site (http://www.jtc1.org/). It is recommended that the first version descriptor be used for
+the SCSI architecture standard, followed by the physical transport standard if any, followed by the SCSI transport
+protocol standard, followed by the appropriate SPC version, followed by the device type command set, followed by
+a secondary command set if any.
+
+--------------------------------------------------------------------------------------------
+
+Portions of bytes 6 and 7 and all of byte 56 of the standard INQUIRY data shall be used only by SCSI target
+devices that implement the SCSI Parallel Interface. These fields are noted in table 130. For details on how the
+SPI-specific fields relate to the SCSI Parallel Interface see SPI-n (where n is 2 or greater). Table 136 shows just the
+SPI-specific standard INQUIRY fields. The definitions of the SCSI Parallel Interface specific fields shall be as
+follows.
+
+A wide SCSI address 16 (ADDR16) bit of one indicates that the SCSI target device supports 16-bit wide SCSI
+addresses. A value of zero indicates that the SCSI target device does not support 16-bit wide SCSI addresses.
+
+A wide bus 16 (WBUS16) bit of one indicates that the SCSI target device supports 16-bit wide data transfers. A
+value of zero indicates that the SCSI target device does not support 16-bit wide data transfers.
+
+A synchronous transfer (SYNC) bit of one indicates that the SCSI target device supports synchronous data transfer.
+A value of zero indicates the SCSI target device does not support synchronous data transfer.
+
+The obsolete bit 2 in byte 7 indicates whether the SCSI target device supports an obsolete data transfers
+management mechanism defined in SPI-2.
+
+Maximum logical device configuration table
+ADDR16 	WBUS16 	Description
+0 	0 	8 bit wide data path on a single cable with 8 SCSI IDs supported
+0 	1 	16 bit wide data path on a single cable with 8 SCSI IDs supported
+1	1	16 bit wide data path on a single cable with 16 SCSI IDs supported
+
+CLOCKING field
+00b Indicates the target port supports only ST
+01b Indicates the target port supports only DT
+10b Reserved
+11b Indicates the target port supports ST and DT
+
+A quick arbitration and selection supported (QAS) bit of one indicates that the target port supports quick arbitration
+and selection. A value of zero indicates that the target port does not support quick arbitration and selection.
+
+An information units supported (IUS) bit of one indicates that the SCSI target device supports information unit
+transfers. A value of zero indicates that the SCSI target device does not support information unit transfers.
+
+NOTE 29 - The acronyms ST and DT and the terms 'quick arbitration and selection' and 'information units' are
+defined in SPI-5.

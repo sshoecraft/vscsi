@@ -1,0 +1,13 @@
+#!/bin/bash
+test -z "$1" && exit 1
+cwd=$(pwd)
+cd $1 || exit 1
+test -h arch/um/include/asm/pci.h || (cd arch/um/include/asm/; ln -s ${cwd}/um/pci.h .)
+cd drivers/
+test -h um || ln -s ${cwd} ./um
+if test $(cat Kconfig | grep -c "source \"drivers/um/Kconfig\"") -eq 0; then
+	(sed -s "s:menu \"Device Drivers\":menu \"Device Drivers\"\\n\\nsource \"drivers/um/Kconfig\":" -i Kconfig)
+fi
+if test $(cat Makefile | grep -c "obj-\$(CONFIG_VPCI)") -eq 0; then
+	echo "obj-\$(CONFIG_VPCI)              += um/" >> Makefile
+fi

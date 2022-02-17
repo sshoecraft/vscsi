@@ -1,0 +1,42 @@
+
+menu "Virtual device support"
+
+config VPCI
+	bool "Virtual PCI Driver"
+	select PCI
+	select HOTPLUG
+	select GENERIC_PCI_IOMAP
+	default n
+
+config PCI_DEBUG
+	bool
+	default y
+
+config VSCSI
+	tristate "Virtual SCSI Adapter"
+	depends on VPCI
+	select SCSI
+	select VIRT_TO_BUS
+	default n
+
+config VNET
+	tristate "Virtual Network Adapter"
+	depends on VPCI
+	select MII
+	default n
+
+config VVID
+	tristate "Virtual Video Adapter"
+	depends on VPCI
+	default n
+
+config VSND
+	tristate "Virtual Sound Card"
+	depends on VPCI
+	default n
+
+config VIRTUAL
+	bool
+	default y
+
+endmenu

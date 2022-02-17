@@ -1,0 +1,4 @@
+while read n
+do
+        cp old2/$n .
+done < y

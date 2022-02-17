@@ -1,0 +1,18 @@
+n=3
+while [ $n -lt 22 ]
+do
+	echo $n
+	mtx load $n 0
+	sleep 20
+	echo "status:"
+	mt -f /dev/st0 status
+	echo "set block:"
+	mt -f /dev/st0 setblk 131072
+	echo "set compression:"
+	mt -f /dev/st0 compression 1
+	echo "status:"
+	mt -f /dev/st0 status
+	mt -f /dev/st0 offline
+	mtx unload $n 0
+	let n=n+1
+done

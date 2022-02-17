@@ -1,0 +1,41 @@
+
+#define dump_data(u,s,d,l) bindump(s,d,min(l,64));
+
+#if 0
+static void dump_data(int unit, char *str, void *data, int data_len) {
+	printk(KERN_INFO "scsi%d: %s(%d bytes):\n",unit,str,data_len);
+	bindump(data,min(data_len,64));
+#if 0
+        print_hex_dump(KERN_INFO, "", DUMP_PREFIX_OFFSET, 16, 1, data, min(data_len,16), 1);
+	char line[128], *lp;
+        unsigned char *p;
+        int x,y,len,off;
+
+	printk(KERN_INFO "scsi%d: %s(%d bytes):\n",unit,str,data_len);
+//	len = min(16, data_len);
+	len = data_len;
+        print_hex_dump(KERN_INFO, "test", DUMP_PREFIX_OFFSET, 32, 1, data, len, 1);
+	void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
+                        const void *buf, size_t len)
+        p = data;
+	off = 0;
+	sprintf(line,"%04x: ",off);
+	lp = line + strlen(line);
+        for(x=y=0; x < len; x++) {
+		sprintf(lp," %02x",p[x]);
+		lp += 3;
+                y++;
+                if (y > 15) {
+                        printk(KERN_INFO "%s\n", line);
+			off += 16;
+			sprintf(line,"%04x: ",off);
+			lp = line + strlen(line);
+                        y = 0;
+                }
+        }
+        if (y) printk(KERN_INFO "%s\n", line);
+#endif
+	return;
+}
+#endif
+

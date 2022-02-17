@@ -1,0 +1,271 @@
+
+static int virtual_bus_match(struct device *dev, struct device_driver *drv)
+{
+	/* We always match devs */
+	printk(">>> virtual_bus_match...\n");
+	return 1;
+#if 0
+        struct virtual_dev *virtual_dev = to_virtual_dev(dev);
+        struct virtual_driver *virtual_drv = to_virtual_driver(drv);
+        const struct virtual_device_id *found_id;
+
+        found_id = virtual_match_device(virtual_drv, virtual_dev);
+        if (found_id)
+                return 1;
+
+        return 0;
+#endif
+}
+
+#ifndef CONFIG_HOTPLUG
+static int virtual_uevent(struct device *dev, struct kobj_uevent_env *env)
+{
+        return -ENODEV;
+}
+#endif
+
+#if 0
+static int virtual_device_probe(struct device * dev)
+{
+	printk(">>> virtual_device_probe...\n");
+	return 0;
+#if 0
+        int error = 0;
+        struct virtual_driver *drv;
+        struct virtual_dev *virtual_dev;
+
+        drv = to_virtual_driver(dev->driver);
+        virtual_dev = to_virtual_dev(dev);
+        virtual_dev_get(virtual_dev);
+        error = __virtual_device_probe(drv, virtual_dev);
+        if (error)
+                virtual_dev_put(virtual_dev);
+
+        return error;
+#endif
+}
+
+static int virtual_device_remove(struct device * dev)
+{
+	printk(">>> virtual_device_remove...\n");
+#if 0
+        struct virtual_dev * virtual_dev = to_virtual_dev(dev);
+        struct virtual_driver * drv = virtual_dev->driver;
+
+        if (drv) {
+                if (drv->remove)
+                        drv->remove(virtual_dev);
+                virtual_dev->driver = NULL;
+        }
+
+        /*
+         * If the device is still on, set the power state as "unknown",
+         * since it might change by the next time we load the driver.
+         */
+        if (virtual_dev->current_state == PCI_D0)
+                virtual_dev->current_state = PCI_UNKNOWN;
+
+        /*
+         * We would love to complain here if virtual_dev->is_enabled is set, that
+         * the driver should have called virtual_disable_device(), but the
+         * unfortunate fact is there are too many odd BIOS and bridge setups
+         * that don't like drivers doing that all of the time.
+         * Oh well, we can dream of sane hardware when we sleep, no matter how
+         * horrible the crap we have to deal with is when we are awake...
+         */
+
+        virtual_dev_put(virtual_dev);
+#endif
+        return 0;
+}
+
+static void virtual_device_shutdown(struct device *dev)
+{
+	printk(">>> virtual_device_shutdown...\n");
+#if 0
+        struct virtual_dev *virtual_dev = to_virtual_dev(dev);
+        struct virtual_driver *drv = virtual_dev->driver;
+
+        if (drv && drv->shutdown)
+                drv->shutdown(virtual_dev);
+#endif
+}
+#endif
+
+static int virtual_device_suspend(struct device * dev, pm_message_t state)
+{
+	printk(">>> virtual_device_suspend...\n");
+	return 0;
+#if 0
+        struct virtual_dev * virtual_dev = to_virtual_dev(dev);
+        struct virtual_driver * drv = virtual_dev->driver;
+        int i = 0;
+
+        if (drv && drv->suspend) {
+                i = drv->suspend(virtual_dev, state);
+                suspend_report_result(drv->suspend, i);
+        } else {
+                virtual_save_state(virtual_dev);
+                /*
+                 * mark its power state as "unknown", since we don't know if
+                 * e.g. the BIOS will change its device state when we suspend.
+                 */
+                if (virtual_dev->current_state == PCI_D0)
+                        virtual_dev->current_state = PCI_UNKNOWN;
+        }
+        return i;
+#endif
+}
+
+#if 0
+static int virtual_device_suspend_late(struct device * dev, pm_message_t state)
+{
+	printk(">>> virtual_device_suspend_late...\n");
+	return 0;
+#if 0
+        struct virtual_dev * virtual_dev = to_virtual_dev(dev);
+        struct virtual_driver * drv = virtual_dev->driver;
+        int i = 0;
+
+        if (drv && drv->suspend_late) {
+                i = drv->suspend_late(virtual_dev, state);
+                suspend_report_result(drv->suspend_late, i);
+        }
+        return i;
+#endif
+}
+#endif
+
+#if 0
+static int virtual_default_resume(struct virtual_dev *virtual_dev)
+{
+	printk(">>> virtual_device_default_resume...\n");
+	return 0;
+#if 0
+        int retval = 0;
+
+        /* restore the PCI config space */
+        virtual_restore_state(virtual_dev);
+        /* if the device was enabled before suspend, reenable */
+        retval = virtual_reenable_device(virtual_dev);
+        /* if the device was busmaster before the suspend, make it busmaster again */
+        if (virtual_dev->is_busmaster)
+                virtual_set_master(virtual_dev);
+
+        return retval;
+#endif
+}
+#endif
+
+static int virtual_device_resume(struct device * dev)
+{
+	printk(">>> virtual_device_resume...\n");
+	return 0;
+#if 0
+        int error;
+        struct virtual_dev * virtual_dev = to_virtual_dev(dev);
+        struct virtual_driver * drv = virtual_dev->driver;
+
+        if (drv && drv->resume)
+                error = drv->resume(virtual_dev);
+        else
+                error = virtual_default_resume(virtual_dev);
+        return error;
+#endif
+}
+
+#if 0
+static int virtual_device_resume_early(struct device * dev)
+{
+	printk(">>> virtual_device_resume_early...\n");
+	return 0;
+#if 0
+        int error = 0;
+        struct virtual_dev * virtual_dev = to_virtual_dev(dev);
+        struct virtual_driver * drv = virtual_dev->driver;
+
+        virtual_fixup_device(virtual_fixup_resume, virtual_dev);
+
+        if (drv && drv->resume_early)
+                error = drv->resume_early(virtual_dev);
+        return error;
+#endif
+}
+#endif
+
+struct device_attribute virtual_dev_attrs[] = {
+#if 0
+        __ATTR_RO(resource),
+        __ATTR_RO(vendor),
+        __ATTR_RO(device),
+        __ATTR_RO(subsystem_vendor),
+        __ATTR_RO(subsystem_device),
+        __ATTR_RO(class),
+        __ATTR_RO(irq),
+        __ATTR_RO(local_cpus),
+        __ATTR_RO(modalias),
+#ifdef CONFIG_NUMA
+        __ATTR_RO(numa_node),
+#endif
+        __ATTR(enable, 0600, is_enabled_show, is_enabled_store),
+        __ATTR(broken_parity_status,(S_IRUGO|S_IWUSR),
+                broken_parity_status_show,broken_parity_status_store),
+        __ATTR(msi_bus, 0644, msi_bus_show, msi_bus_store),
+#endif
+        __ATTR_NULL,
+};
+
+
+#if 0
+        const char              *name;
+        struct bus_attribute    *bus_attrs;
+        struct device_attribute *dev_attrs;
+        struct driver_attribute *drv_attrs;
+
+        int (*match)(struct device *dev, struct device_driver *drv);
+        int (*uevent)(struct device *dev, struct kobj_uevent_env *env);
+        int (*probe)(struct device *dev);
+        int (*remove)(struct device *dev);
+        void (*shutdown)(struct device *dev);
+
+        int (*suspend)(struct device *dev, pm_message_t state);
+        int (*suspend_late)(struct device *dev, pm_message_t state);
+        int (*resume_early)(struct device *dev);
+        int (*resume)(struct device *dev);
+
+        struct bus_type_private *p;
+#endif
+
+static struct bus_type vscsi_bus_driver = {
+        .name           = "virtual",
+        .dev_attrs      = virtual_dev_attrs,
+        .match          = virtual_bus_match,
+#ifndef CONFIG_HOTPLUG
+        .uevent         = virtual_uevent,
+#endif
+#if 0
+        .probe          = virtual_device_probe,
+        .remove         = virtual_device_remove,
+        .shutdown       = virtual_device_shutdown,
+#endif
+        .suspend        = virtual_device_suspend,
+//        .suspend_late   = virtual_device_suspend_late,
+//        .resume_early   = virtual_device_resume_early,
+        .resume         = virtual_device_resume,
+};
+
+#if 0
+static int __init virtual_bus_init(void)
+{
+	int err;
+
+	printk(">>> registering virtual_bus driver...\n");
+	err = bus_register(&virtual_bus_type);
+	if (err)
+		printk(KERN_ERR "error registering Virtual Bus!\n");
+	else
+		printk(KERN_INFO "Virtual Bus registered.\n");
+
+	return err;
+}
+#endif

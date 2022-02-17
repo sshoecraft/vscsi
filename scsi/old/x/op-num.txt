@@ -1,0 +1,243 @@
+File: OP-NUM.TXT
+
+SCSI Operation Codes
+Numeric Sorted Listing
+as of  3/11/08
+
+    D - DIRECT ACCESS DEVICE (SBC-2)                   device column key
+    .T - SEQUENTIAL ACCESS DEVICE (SSC-2)             -------------------
+    . L - PRINTER DEVICE (SSC)                        M = Mandatory
+    .  P - PROCESSOR DEVICE (SPC)                     O = Optional
+    .  .W - WRITE ONCE READ MULTIPLE DEVICE (SBC-2)   V = Vendor specific
+    .  . R - CD/DVE DEVICE (MMC-3)                    Z = Obsolete
+    .  .  O - OPTICAL MEMORY DEVICE (SBC-2)
+    .  .  .M - MEDIA CHANGER DEVICE (SMC-2)
+    .  .  . A - STORAGE ARRAY DEVICE (SCC-2)
+    .  .  . .E - ENCLOSURE SERVICES DEVICE (SES)
+    .  .  .  .B - SIMPLIFIED DIRECT-ACCESS DEVICE (RBC)
+    .  .  .  . K - OPTICAL CARD READER/WRITER DEVICE (OCRW)
+    .  .  .  .  V - AUTOMATION/DRIVE INTERFACE (ADC)
+    .  .  .  .  .F - OBJECT-BASED STORAGE (OSD)
+OP  DTLPWROMAEBKVF  Description
+--  --------------  ----------------------------------------------------
+00  MMMMMMMMMMMMMM  TEST UNIT READY
+01   M              REWIND
+01  Z V ZZZZ        REZERO UNIT
+02  VVVVVV V
+03  MMMMMMMMMMOMMM  REQUEST SENSE
+04  M    OO         FORMAT UNIT
+04   O              FORMAT MEDIUM
+04    O             FORMAT
+05  VMVVVV V        READ BLOCK LIMITS
+06  VVVVVV V
+07  OVV O OV        REASSIGN BLOCKS
+07         O        INITIALIZE ELEMENT STATUS
+08  MOV O OV        READ(6)
+08     O            RECEIVE
+08                  GET MESSAGE(6)
+09  VVVVVV V
+0A  OO  O OV        WRITE(6)
+0A     M            SEND(6)
+0A                  SEND MESSAGE(6)
+0A    M             PRINT
+0B  Z   ZOZV        SEEK(6)
+0B   O              SET CAPACITY
+0B    O             SLEW AND PRINT
+0C  VVVVVV V
+0D  VVVVVV V
+0E  VVVVVV V
+0F  VOVVVV V        READ REVERSE(6)
+10  VM VVV          WRITE FILEMARKS(6)
+10    O             SYNCHRONIZE BUFFER
+11  VMVVVV          SPACE(6)
+12  MMMMMMMMMMMMMM  INQUIRY
+13  V VVVV
+13   O              VERIFY(6)
+14  VOOVVV          RECOVER BUFFERED DATA
+15  OMO O OOOO OO   MODE SELECT(6)
+16  ZZMZO OOOZ O    RESERVE(6)
+16         Z        RESERVE ELEMENT(6)
+17  ZZMZO OOOZ O    RELEASE(6)
+17         Z        RELEASE ELEMENT(6)
+18  ZZZZOZO    Z    COPY
+19  VMVVVV          ERASE(6)
+1A  OMO O OOOO OO   MODE SENSE(6)
+1B  O   OOO O MO O  START STOP UNIT
+1B   O          M   LOAD UNLOAD
+1B                  SCAN
+1B    O             STOP PRINT
+1B         O        OPEN/CLOSE IMPORT/EXPORT ELEMENT
+1C  OOOOO OOOM OOO  RECEIVE DIAGNOSTIC RESULTS
+1D  MMMMM MMOM MMM  SEND DIAGNOSTIC
+1E  OO  OOOO   O O  PREVENT ALLOW MEDIUM REMOVAL
+1F
+20  V   VVV    V
+21  V   VVV    V
+22  V   VVV    V
+23  V   V V    V
+23       O          READ FORMAT CAPACITIES
+24  V   VV          SET WINDOW
+25  M   M M   M     READ CAPACITY(10)
+25       O          READ CAPACITY
+25             M    READ CARD CAPACITY
+25                  GET WINDOW
+26  V   VV
+27  V   VV
+28  M   MOM   MM    READ(10)
+28                  GET MESSAGE(10)
+29  V   VVO         READ GENERATION
+2A  O   MOM   MO    WRITE(10)
+2A                  SEND(10)
+2A                  SEND MESSAGE(10)
+2B  Z   OOO    O    SEEK(10)
+2B   O              LOCATE(10)
+2B         O        POSITION TO ELEMENT
+2C  V    OO         ERASE(10)
+2D        O         READ UPDATED BLOCK
+2D  V
+2E  O   OOO   MO    WRITE AND VERIFY(10)
+2F  O   OOO         VERIFY(10)
+30  Z   ZZZ         SEARCH DATA HIGH(10)
+31  Z   ZZZ         SEARCH DATA EQUAL(10)
+31                  OBJECT POSITION
+32  Z   ZZZ         SEARCH DATA LOW(10)
+33  Z   OZO         SET LIMITS(10)
+34  O   O O    O    PRE-FETCH(10)
+34   M              READ POSITION
+34                  GET DATA BUFFER STATUS
+35  O   OOO   MO    SYNCHRONIZE CACHE(10)
+36  Z   O O    O    LOCK UNLOCK CACHE(10)
+37  O     O         READ DEFECT DATA(10)
+37         O        INITIALIZE ELEMENT STATUS WITH RANGE
+38      O O    O    MEDIUM SCAN
+39  ZZZZOZO    Z    COMPARE
+3A  ZZZZOZO    Z    COPY AND VERIFY
+3B  OOOOOOOOOOMOOO  WRITE BUFFER
+3C  OOOOOOOOOO OOO  READ BUFFER
+3D        O         UPDATE BLOCK
+3E  O   O O         READ LONG(10)
+3F  O   O O         WRITE LONG(10)
+40  ZZZZOZOZ        CHANGE DEFINITION
+41  O               WRITE SAME(10)
+42       O          READ SUB-CHANNEL
+43       O          READ TOC/PMA/ATIP
+44   M          M   REPORT DENSITY SUPPORT
+44                  READ HEADER
+45       O          PLAY AUDIO(10)
+46       M          GET CONFIGURATION
+47       O          PLAY AUDIO MSF
+48
+49
+4A       M          GET EVENT STATUS NOTIFICATION
+4B       O          PAUSE/RESUME
+4C  OOOOO OOOO OOO  LOG SELECT
+4D  OOOOO OOOO OMO  LOG SENSE
+4E       O          STOP PLAY/SCAN
+4F
+50  O               XDWRITE(10)
+51  O               XPWRITE(10)
+51       O          READ DISC INFORMATION
+52  O               XDREAD(10)
+52       O          READ TRACK INFORMATION
+53       O          RESERVE TRACK
+54       O          SEND OPC INFORMATION
+55  OOO OMOOOOMOMO  MODE SELECT(10)
+56  ZZMZO OOOZ      RESERVE(10)
+56         Z        RESERVE ELEMENT(10)
+57  ZZMZO OOOZ      RELEASE(10)
+57         Z        RELEASE ELEMENT(10)
+58       O          REPAIR TRACK
+59
+5A  OOO OMOOOOMOMO  MODE SENSE(10)
+5B       O          CLOSE TRACK/SESSION
+5C       O          READ BUFFER CAPACITY
+5D       O          SEND CUE SHEET
+5E  OOOOO OOOO   M  PERSISTENT RESERVE IN
+5F  OOOOO OOOO   M  PERSISTENT RESERVE OUT
+7E  OO   O OOOO O   extended CDB
+7F  O            M  variable length CDB (more than 16 bytes)
+80  Z               XDWRITE EXTENDED(16)
+80   M              WRITE FILEMARKS(16)
+81  Z               REBUILD(16)
+81   O              READ REVERSE(16)
+82  Z               REGENERATE(16)
+83  OOOOO O    OO   EXTENDED COPY
+84  OOOOO O    OO   RECEIVE COPY RESULTS
+85  O    O    O     ATA COMMAND PASS THROUGH(16)
+86  OO OO OOOOOOO   ACCESS CONTROL IN
+87  OO OO OOOOOOO   ACCESS CONTROL OUT
+88  MM  O O   O     READ(16)
+89
+8A  OM  O O   O     WRITE(16)
+8B  O               ORWRITE
+8C  OO  O OO  O M   READ ATTRIBUTE
+8D  OO  O OO  O O   WRITE ATTRIBUTE
+8E  O   O O   O     WRITE AND VERIFY(16)
+8F  OO  O O   O     VERIFY(16)
+90  O   O O   O     PRE-FETCH(16)
+91  O   O O   O     SYNCHRONIZE CACHE(16)
+91   O              SPACE(16)
+92  Z   O O         LOCK UNLOCK CACHE(16)
+92   O              LOCATE(16)
+93  O               WRITE SAME(16)
+93   M              ERASE(16)
+94                  [usage proposed by SCSI Socket Services project]
+95                  [usage proposed by SCSI Socket Services project]
+96                  [usage proposed by SCSI Socket Services project]
+97                  [usage proposed by SCSI Socket Services project]
+98
+99
+9A
+9B
+9C
+9D
+9E                  SERVICE ACTION IN(16)
+9F              M   SERVICE ACTION OUT(16)
+A0  MMOOO OMMM OMO  REPORT LUNS
+A1       O          BLANK
+A1  O         O     ATA COMMAND PASS THROUGH(12)
+A2  OO   O      O   SECURITY PROTOCOL IN
+A3  OOO O OOMOOOM   MAINTENANCE (IN)
+A3       O          SEND KEY
+A4  OOO O OOOOOOO   MAINTENANCE (OUT)
+A4       O          REPORT KEY
+A5   O  O OM        MOVE MEDIUM
+A5       O          PLAY AUDIO(12)
+A6         O        EXCHANGE MEDIUM
+A6       O          LOAD/UNLOAD C/DVD
+A7  ZZ  O O         MOVE MEDIUM ATTACHED
+A7       O          SET READ AHEAD
+A8  O   OOO         READ(12)
+A8                  GET MESSAGE(12)
+A9              O   SERVICE ACTION OUT(12)
+AA  O   OOO         WRITE(12)
+AA                  SEND MESSAGE(12)
+AB       O      O   SERVICE ACTION IN(12)
+AC        O         ERASE(12)
+AC       O          GET PERFORMANCE
+AD       O          READ DVD STRUCTURE
+AE  O   O O         WRITE AND VERIFY(12)
+AF  O   OZO         VERIFY(12)
+B0      ZZZ         SEARCH DATA HIGH(12)
+B1      ZZZ         SEARCH DATA EQUAL(12)
+B2      ZZZ         SEARCH DATA LOW(12)
+B3  Z   OZO         SET LIMITS(12)
+B4  ZZ  OZO         READ ELEMENT STATUS ATTACHED
+B5  OO   O      O   SECURITY PROTOCOL OUT
+B5         O        REQUEST VOLUME ELEMENT ADDRESS
+B6         O        SEND VOLUME TAG
+B6       O          SET STREAMING
+B7  O     O         READ DEFECT DATA(12)
+B8   O  OZOM        READ ELEMENT STATUS
+B9       O          READ CD MSF
+BA  O   O OOMO      REDUNDANCY GROUP (IN)
+BA       O          SCAN
+BB  O   O OOOO      REDUNDANCY GROUP (OUT)
+BB       O          SET CD SPEED
+BC  O   O OOMO      SPARE (IN)
+BD  O   O OOOO      SPARE (OUT)
+BD       O          MECHANISM STATUS
+BE  O   O OOMO      VOLUME SET (IN)
+BE       O          READ CD
+BF  O   O OOOO      VOLUME SET (OUT)
+BF       O          SEND DVD STRUCTURE

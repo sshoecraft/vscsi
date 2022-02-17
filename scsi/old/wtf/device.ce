@@ -1,0 +1,206 @@
+
+#include <linux/crc32.h>
+#ifdef __LITTLE_ENDIAN
+#define crcfunc crc32_le
+#else
+#define crcfunc crc32_be
+#endif
+
+#define VSCSI_MAX_CHAN 0
+#define VSCSI_MAX_ID 1
+#define VSCSI_MAX_LUN 0
+
+#ifdef current
+#undef current
+#endif
+
+/* Device def */
+struct vscsi_device {
+	int type;				/* SCSI device type */
+	unsigned short flags;			/* Status flags */
+	void *fp;				/* Host file info */
+	char filename[256];
+	unsigned long serial;			/* CRC32 of path */
+	unsigned long long max_lba;		/* Max Logical Block Address */
+	unsigned long long current;		/* Current block # */
+	struct vscsi_rom *rom;			/* ROM */
+	int key;				/* Sense info */
+	int asc;
+	int asq;
+};
+
+#define DEVICE_FLAG_INUSE	0x0001
+#define DEVICE_FLAG_OPEN	0x0002
+#define DEVICE_FLAG_REMOVABLE	0x0004
+#define DEVICE_FLAG_FORMAT	0x0008
+#define DEVICE_FLAG_DEBUG	0x8000
+
+#define DFLAG(p, f) ( ( (p)->flags & DEVICE_FLAG_##f) != 0)
+
+static struct vscsi_device dummy_device = { 0x7F };
+static struct vscsi_device devices[VSCSI_MAX_ID+1];
+
+#define vscsi_get_device(c,i,l) (i <= VSCSI_MAX_ID ? &devices[i] : &dummy_device);
+#if 0
+static struct vscsi_device *vscsi_get_device(int chan, int id, int lun) {
+	struct vscsi_device *dp;
+
+        printk("vscsi_get_device: id: %d(%d), lun: %d(%d)\n",
+		chan, VSCSI_NUM_CHANS, id, VSCSI_NUM_IDS, lun, VSCSI_NUM_LUNS);
+	dp = (chan < VSCSI_NUM_IDS && id < VSCSI_NUM_LUNS ? &devices[id][lun] : 0);
+//	dp = (chan < VSCSI_NUM_CHANS && id < VSCSI_NUM_IDS && lun < VSCSI_NUM_LUNS ? &devices[chan].d[id][lun] : 0);
+	if (chan < VSCSI_NUM_CHANS) {
+		printk("chan ok.\n");
+		if (id <= VSCSI_NUM_IDS) {
+			printk("id ok.\n");
+			if (lun <= VSCSI_NUM_LUNS) {
+				printk("lun ok.\n");
+				dp = &devices[chan][id][lun];
+			} else {
+				printk("+++ BAD LUN\n");
+				dp = 0;
+			}
+		} else {
+			printk("+++ BAD ID\n");
+			dp = 0;
+		}
+	} else {
+		printk("+++ BAD CHAN\n");
+		dp = 0;
+	}
+
+	printk("get_device: dp: %p\n", dp);
+	return dp;
+}
+#endif
+
+static struct vscsi_device *vscsi_add_device(unsigned char type, unsigned char chan, char *path) {
+	struct vscsi_device *dp;
+	int i,found;
+
+	printk("add_device: chan: %d, type: %d, path: %s\n", chan, type, path);
+
+	found = 0;
+	for(i=0; i <= VSCSI_MAX_ID; i++) {
+		dp = vscsi_get_device(chan,i,0);
+		if (!dp) continue;
+		printk("flags: %x\n", dp->flags);
+		if (DFLAG(dp,INUSE)) continue;
+		found = 1;
+		break;
+	}
+	if (!found) {
+		printk(KERN_ERR "vSCSI: unable to find free id in channel %d\n",chan);
+		return 0;
+	}
+	memset(dp, 0, sizeof(*dp));
+#if 0
+	dp = kmalloc(sizeof(struct vscsi_device), GFP_KERNEL);
+	printk("dp: %p\n", dp);
+	if (!dp) {
+		printk(KERN_ERR "vSCSI: unable to alloc mem, device not added.\n");
+		return 0;
+	}
+	memset(dp, 0, sizeof(*dp));
+	dp = 0;
+	for(i=0; i < VSCSI_MAX_ID; i++) {
+		dp = vscsi_get_device(chan, i, 0);
+		if (!dp) continue;
+		if (!dp->rom) break;
+	}
+	printk("dp: %p\n", dp);
+	if (!dp || dp->rom) {
+		printk(KERN_ERR "vSCSI: unable to find free id in channel %d\n",chan);
+		return 0;
+	}
+#endif
+
+	dp->flags = DEVICE_FLAG_DEBUG;
+	dp->type = type;
+	switch(type) {
+	case TYPE_DISK:
+	case TYPE_MOD:
+		dp->rom = &vDISK_rom;
+		break;
+	case TYPE_TAPE:
+		dp->rom = &vTAPE_rom;
+		dp->flags |= DEVICE_FLAG_REMOVABLE;
+		break;
+	case TYPE_WORM:
+	case TYPE_ROM:
+		dp->rom = &vCD_rom;
+		dp->flags |= DEVICE_FLAG_REMOVABLE;
+		break;
+	case TYPE_MEDIUM_CHANGER:
+		dp->rom = &vCHANGER_rom;
+		break;
+	default:
+		printk(KERN_ERR "vSCSI: no rom for type %d!\n", type);
+		break;
+	}
+	strcpy(dp->filename, path);
+
+#if 0
+	/* Generate serial from CRC of path */
+	dp->serial = crcfunc(~0, path, strlen(path));
+	if (DFLAG(dp,DEBUG)) printk("vSCSI: serial: %lx\n", dp->serial);
+
+	/* Update the NAA locally-administrated value in the rom */
+	if (dp->rom) {
+		struct vscsi_rom_page *page;
+
+		i = 0;
+		for(page = dp->rom->vpd; page; page++) {
+			if (page->num == 0x83) {
+				printk("found vpd 83!\n");
+				memcpy(&page->data[12],&dp->serial,4);
+				i = 1;
+				break;
+			}
+		}
+		if (!i) printk(KERN_ERR "vSCSI: device_add: unable to update NAA value!\n");
+	}
+#endif
+
+	/* If not removable, try to access the file */
+	if (!DFLAG(dp, REMOVABLE)) {
+		if (vscsi_file_open(path,&dp->fp)) {
+			printk(KERN_ERR "vSCSI: unable to open %s, device not added.\n", path);
+			kfree(dp);
+			return 0;
+		}
+		dp->flags |= DEVICE_FLAG_OPEN;
+	}
+
+	/* Set in use flag */
+	dp->flags |= DEVICE_FLAG_INUSE;
+	dp->flags |= DEVICE_FLAG_DEBUG;
+#if 0
+	/* Add it to next open slot */
+	for(i = 0; i < VSCSI_NUM_IDS; i++) {
+		if (!devices[chan][i]) {
+			devices[chan][i] = dp;
+			printk("added dev as: %d,%d\n", chan,i);
+			break;
+		}
+	}
+#endif
+
+	return dp;
+}
+
+static int vscsi_device_init(void) {
+//	int chan,id,lun;
+
+	printk("vSCSI: initializing devices...\n");
+#if 0
+	for(chan=0; chan < VSCSI_NUM_CHANS; chan++) {
+		for(id=0; id < VSCSI_NUM_IDS; id++) {
+			for(lun=0; lun < VSCSI_NUM_LUNS; lun++)
+				memset(&devices[chan][id][lun],0,sizeof(struct vscsi_device));
+		}
+	}
+#endif
+	memset(&devices,0,sizeof(devices));
+	return 0;
+}

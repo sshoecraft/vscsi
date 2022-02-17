@@ -1,0 +1,27 @@
+
+SRCS=head.c
+
+ifeq ($(CONFIG_COOPERATIVE),y)
+SRCS += host_co.c
+else
+ifeq ($(CONFIG_UML),y)
+SRCS += host_co.c
+endif
+endif
+
+#EXTRA_CFLAGS            += -DDEBUG
+
+#obj-$(CONFIG_MMC)               += mmc_core.o
+#mmc_core-y                      := core.o sysfs.o mmc.o mmc_ops.o sd.o sd_ops.o
+
+KERN=/usr/src/uml
+all:
+	make -I`pwd` -C $(KERN) SUBDIRS=`pwd` modules
+
+vnet-gen-$(CONFIG_VNET) =	vnet.c
+$(obj)/try.c: $(SRCS) Makefile
+	cat $(SRCS) > $(obj)/try.c
+
+obj-y += vnet.o
+
+$(obj)/vnet.o: $(obj)/try.c

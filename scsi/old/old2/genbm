@@ -1,0 +1,19 @@
+inc=cbm.h
+rm -f $inc
+echo "#ifndef __SCSI_CBM_H" >> $inc
+echo "#define __SCSI_CBM_H" >> $inc
+echo "" >> $inc
+echo -n "Generating:"
+for t in disk tape printer proc worm cdrom scanner changer comm
+do
+	echo -n " $t"
+	sh t $t [OM] | while read a desc
+	do
+		printf "%d\n" 0x$a >> $t
+	done
+	./mkbm $t >> $inc
+	rm $t
+done
+echo ""
+echo "" >> $inc
+echo "#endif" >> $inc

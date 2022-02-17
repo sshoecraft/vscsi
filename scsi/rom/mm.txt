@@ -1,0 +1,15 @@
+7.2.2 Mode Pages
+Mode pages are used to provide parametric information from the Drive to the Host or from the Host to the Drive.
+Table 689 shows mode pages available to Multi-media Drives.
+Since MM Drives do not support sub-pages of mode pages, the Sub-Page field of the MODE SELECT (10)
+command is ignored by the Drive.
+Table 689 . Mode Pages for MM Drives
+Page Code Description Reference
+00h Vendor-specific (does not require mode page format) -
+01h Read/Write Error Recovery mode page 7.3
+03h MRW mode page 7.4
+05h Write Parameter mode page 7.5
+08h Caching mode page 7.6
+1Ah Power Condition mode page 7.7
+1Ch Informational Exceptions Control mode page 7.8
+1Dh Timeout and Protect mode page 7.9

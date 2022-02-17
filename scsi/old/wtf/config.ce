@@ -1,0 +1,20 @@
+
+static int vscsi_config(struct scsi_device *sdev) {
+//	sdev->use_10_for_rw = 1;
+//	sdev->use_10_for_ms = 1;
+//	scsi_adjust_queue_depth(sdev, MSG_SIMPLE_TAG, sdev->host->cmd_per_lun);
+#if 0
+	switch(sdev->type) {
+	case TYPE_ROM:
+	case TYPE_WORM:
+		/* XXX required to get rid of "unaligned transfer" errors */
+	        blk_queue_hardsect_size(sdev->request_queue, 2048);
+		break;
+	default:
+		break;
+	}
+
+#endif
+	return 0;
+}
+

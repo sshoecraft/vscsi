@@ -1,0 +1,27 @@
+static void bindump(char *msg, void *bdata, int bytes) {
+	unsigned char *data = bdata;
+        int offset,end,x,y;
+	char line[128],*p;
+
+	printk("%s:\n",msg);
+	p = line;
+        offset = 0;
+        for(x=0; x < bytes; x += 16) {
+		p += sprintf(p, "%04X: ",offset);
+                end=(x+16 > bytes ? bytes : x+16);
+                for(y=x; y < end; y++)  p += sprintf(p,"%02X ",data[y]);
+                for(y=end; y < x+16; y++) p += sprintf(p,"   ");
+                p += sprintf(p,"  ");
+                for(y=x; y < end; y++) {
+                        if (data[y] > 32 && data[y] < 127)
+				p += sprintf(p,"%c",data[y]);
+                        else
+				p += sprintf(p,".");
+                }
+		p += sprintf(p,"\n");
+		printk(line);
+		p = line;
+                offset += 16;
+        }
+}
+

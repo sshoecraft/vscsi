@@ -1,0 +1,21 @@
+
+#define VSCSI_DEBUG_SENSE 1
+
+int mode_sense_6(struct vscsi_device *dp, struct scsi_cmnd *scp) {
+	int err,len;
+
+	/* MEDIUM TYPE */
+	temp[1] = 0;
+	/* DEVICE-SPECIFIC PARAMETER */
+	temp[2] = 0;
+	/* BLOCK DESCRIPTOR LENGTH */
+	temp[3] = 8;
+
+	err =  mode_sense(dp, scp, &temp[4], min(scp->cmnd[4],sizeof(temp)), 0, &len);
+	if (err) return err;
+
+	/* MODE DATA LENGTH */
+	temp[0] = len;
+	return response(scp, &temp, len);
+}
+

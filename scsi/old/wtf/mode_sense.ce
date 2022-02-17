@@ -1,0 +1,112 @@
+
+#define VSCSI_DEBUG_SENSE 1
+
+static int _add_page(int d, unsigned char *p, int len, struct vscsi_rom_page *page) {
+	unsigned char *endp = temp + len;
+
+	if (p + page->size >= endp) return 0;
+	memcpy(p, page->data, page->size);
+	if (d) dump_data(scp->device->id, "page data", page->data, page->size);
+	return page->size;
+}
+
+static int mode_sense(struct vscsi_device *dp, struct scsi_cmnd *scp, unsigned char *p, int len, int llba, int *offset) {
+	struct vscsi_rom_page *pages = dp->rom->mode;
+	unsigned char *oldp;
+	int x,page;
+
+	/* Save ptr */
+	oldp = p;
+
+	/* Generate the block descriptor */
+	if (llba) {
+		/* 0-7: NUMBER OF BLOCKS */
+		*p++ = (dp->max_lba >> 56) & 0xff;
+		*p++ = (dp->max_lba >> 48) & 0xff;
+		*p++ = (dp->max_lba >> 40) & 0xff;
+		*p++ = (dp->max_lba >> 32) & 0xff;
+		*p++ = (dp->max_lba >> 24) & 0xff;
+		*p++ = (dp->max_lba >> 16) & 0xff;
+		*p++ = (dp->max_lba >> 8) & 0xff;
+		*p++ = dp->max_lba & 0xff;
+		/* 8: DENSITY CODE */
+		*p++ = 0;
+		/* 9-11: Reserved */
+		*p++ = 0;
+		*p++ = 0;
+		*p++ = 0;
+		/* 12-15: BLOCK LENGTH */
+	} else {
+		if (dp->type == 0) {
+			/* Direct-access device mode parameter block descriptor */
+			/* 0-3: NUMBER OF BLOCKS */
+			if (dp->max_lba > 0xfffffffe) {
+				*p++ = 0xff;
+				*p++ = 0xff;
+				*p++ = 0xff;
+				*p++ = 0xff;
+			} else {
+				*p++ = (dp->max_lba >> 24) & 0xff;
+				*p++ = (dp->max_lba >> 16) & 0xff;
+				*p++ = (dp->max_lba >> 8) & 0xff;
+				*p++ = dp->max_lba & 0xff;
+			}
+		} else {
+			/* General mode parameter block descriptor */
+			/* 0: DENSITY CODE */
+			*p++ = 0;
+			/* 1-3: NUMBER OF BLOCKS */
+			if (dp->max_lba > 0xfffffe) {
+				*p++ = 0xff;
+				*p++ = 0xff;
+				*p++ = 0xff;
+			} else {
+				*p++ = (dp->max_lba >> 16) & 0xff;
+				*p++ = (dp->max_lba >> 8) & 0xff;
+				*p++ = dp->max_lba & 0xff;
+			}
+		}
+		/* 4: DENSITY CODE/Reserved */
+		*p++ = 0;
+		/* 5-7: BLOCK LENGTH */
+	}
+	*p++ = (scp->device->sector_size >> 16) & 0xff;
+	*p++ = (scp->device->sector_size >> 8) & 0xff;
+	*p++ = scp->device->sector_size & 0xff;
+
+#if VSCSI_DEBUG_SENSE
+	if (DFLAG(dp,DEBUG)) printk("mode_sense: p: %p, offset: %d\n", p, (int)(p - oldp));
+#endif
+
+	page = scp->cmnd[2] & 0x3f;
+
+#if VSCSI_DEBUG_SENSE
+	if (DFLAG(dp,DEBUG)) printk("page: %x\n", page);
+#endif
+
+	if (page == 0x3f) {
+		/* All pages */
+		if (scp->cmnd[3] == 0 || scp->cmnd[3] == 0xFF) {
+			for(x=0; pages[x].data; x++) p += _add_page(DFLAG(dp,DEBUG),p,len,&pages[x]);
+		} else
+			return check_condition(dp, ILLEGAL_REQUEST, INVALID_FIELD_IN_CDB, 0);
+	} else {
+		/* Specific page */
+		int found = 0;
+		for(x=0; pages[x].data; x++) {
+#if VSCSI_DEBUG_SENSE
+			if (DFLAG(dp,DEBUG)) printk("mode_sense: pages[%d].num: %x, page: %x\n", x, pages[x].num, page);
+#endif
+			if (pages[x].num == page) {
+				 p += _add_page(DFLAG(dp,DEBUG),p,len,&pages[x]);
+				found = 1;
+				break;
+			}
+		}
+		if (!found) return check_condition(dp, ILLEGAL_REQUEST, INVALID_FIELD_IN_CDB, 0);
+	}
+
+	/* Return the number of bytes in the buffer */
+	return p - oldp;
+}
+

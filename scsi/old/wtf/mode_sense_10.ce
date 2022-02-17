@@ -1,0 +1,16 @@
+
+#define VSCSI_DEBUG_SENSE 1
+
+static int mode_sense_10(struct vscsi_device *dp, struct scsi_cmnd *scp) {
+	int err,len;
+
+	temp[1] = 0;
+	temp[2] = 0x00; /* DPOFUA */
+	temp[3] = 8;
+	err =  mode_sense(dp, scp, &temp[4], min(scp->cmnd[4],sizeof(temp)), 0, &len);
+	if (err) return err;
+
+	temp[0] = len;
+	return response(scp, &temp, len);
+}
+

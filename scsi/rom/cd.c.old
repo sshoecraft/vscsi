@@ -1,0 +1,146 @@
+
+struct standard_page cd_standard_page = {
+.PQ			= 0x00,
+.TYPE			= 0x05,
+.RMB			= 1,
+.VERSION		= 0x06,
+.NORMACA		= 0,
+.HISUP			= 0,
+.RESPONSE_FORMAT	= 2,
+.SCCS			= 0,
+.ACC			= 0,
+.TPGS			= 0x00,
+._3PC			= 0,
+.PROTECT		= 0,
+.ENCSERV		= 0,
+.VS			= 0,
+.MULTIP			= 0,
+.ADDR16			= 1,
+.WBUS16			= 1,
+.SYNC			= 1,
+.CMDQUE			= 0,
+.VS2			= 0,
+.VENDOR			= "vSCSI",
+.PRODUCT		= "vCD",
+.REVISION		= "1.00",
+.SPECIFIC		=
+	{
+		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,	/* 00 - 07 */
+		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,	/* 08 - 0f */
+		0x00,0x00,0x00,0x00,
+	},
+.IUS			= 0,
+.QAS			= 1,
+.CLOCKING		= 0x03,
+.VERSION1		= 0x0014,
+.VERSION2		= 0x0077,
+.VERSION3		= 0x033d,
+.VERSION4		= 0x0000,
+.VERSION5		= 0x0000,
+.VERSION6		= 0x0000,
+.VERSION7		= 0x0000,
+.VERSION8		= 0x0000,
+};
+
+struct rom_page cd_vpd_pages[] = {
+	PAGE_LIST_END
+};
+
+unsigned char cd_mode_1a[] = {
+	/* 0 PS SPF (0b) PAGE CODE (1Ah) */
+	0x1A,
+	/* 1 PAGE LENGTH (0Ah) */
+	0x0A,
+	/* 2 Reserved */
+	0x00,
+	/* 3 Reserved IDLE STANDBY */
+	0x00,
+	/* 4 IDLE CONDITION TIMER bits 24-31 */
+	0x00,
+	/* 5 IDLE CONDITION TIMER bits 16-23 */
+	0x00,
+	/* 6 IDLE CONDITION TIMER bits 08-15 */
+	0x00,
+	/* 7 IDLE CONDITION TIMER bits 00-07 */
+	0x00,
+	/* 8 STANDBY CONDITION TIMER bits 24-31 */
+	0x00,
+	/* 9 STANDBY CONDITION TIMER bits 16-23 */
+	0x00,
+	/* 10 STANDBY CONDITION TIMER bits 08-15 */
+	0x00,
+	/* 11 STANDBY CONDITION TIMER bits 00-07 */
+	0x00
+};
+
+unsigned char cd_mode_2a[] = {
+#if 0
+	0x2a,0x18,0x3f,0x00,0x75,0x7f,0x29,0x00,        /* 00 - 07 */
+	0x16,0x00,0x01,0x00,0x02,0x00,0x16,0x00,        /* 08 - 15 */
+        0x00,0x18,0x00,0x00,0x00,0x00,0x00,0x01,        /* 16 - 23 */
+#endif
+	/* 0 PS Reserved Page Code (2Ah) */
+	0x2a,
+	/* 1 Page Length (28+4*(maximum number of n)) */
+	0x18,
+	/* 2 Reserved DVD- RAM Read DVD-R Read DVD-ROM Read Method 2 CD-RW Read CD-R Read */
+	0x3f,
+	/* 3 Reserved DVD- RAM Write DVD-R Write Reserved Test Write CD-R/RW Write CD-R Write */
+	0x00,
+	/* 4 BUF Multi Session Mode 2 Form 2 Mode 2 Form 1 Digital Port (2) Digital Port (1) Composite Audio Play */
+	0x75,
+	/* 5 Read Bar Code UPC ISRC C2 Pointers supported R-W Deinterleaved & corrected R-W Supported CD-DA Stream is Accurate CD-DA Cmds Supported */
+	0x7f,
+	/* 6 Loading Mechanism Type Reserved Eject (Individual or Magazine) Prevent Jumper Lock State Lock */
+	0x29,
+	/* 7 Reserved R-W in Lead-In Side Change Capable S/W Slot Selection (SSS) Changer Supports Disc Present Separate Channel Mute Separate volume levels */
+	/* 8 (MSB) Obsolete */
+	0x00,
+	/* 9 (LSB) */
+	0x16,
+	/* 10 (MSB) Number of Volume Levels Supported */
+	0x00,
+	/* 11 (LSB) */
+	0x01,
+	/* 12 (MSB) Buffer Size Supported */
+	0x00,
+	/* 13 (LSB) */
+	0x02,
+	/* 14 (MSB) Obsolete */
+	0x00,
+	/* 15 (LSB) */
+	0x16,
+	/* 16 Reserved */
+	0x00,
+	/* 17 Reserved Length LSBF RCK BCKF Reserved */
+	0x00,
+	/* 18 - 21 Obsolete */
+	0x18, 0x00, 0x00,
+	/* 22 (MSB) Copy Management Revision Supported */
+	0x00,
+	/* 23 (LSB) */
+	0x00,
+	/* 24 - 26 Reserved */
+	0x00,
+	/* 27 Reserved Rotation Control Selected */
+	0x01,
+	/* 28 (MSB) Current Write Speed Selected */
+	0x00,
+	/* 29 (LSB) */
+	0x00,
+	/* 30 (MSB) Number of Logical Unit Write Speed Performance Descriptor Tables (n) */
+	0x00,
+};
+
+struct rom_page cd_mode_pages[] = {
+	ROM_PAGE("Power Condition",0x1a,cd_mode_1a),
+	ROM_PAGE("CD/DVD Capabilities and Mechanical Status",0x2a,cd_mode_2a),
+	PAGE_LIST_END
+};
+
+struct rom_info cd_info = {
+	2048,
+	&cd_standard_page,
+	cd_vpd_pages,
+	cd_mode_pages
+};

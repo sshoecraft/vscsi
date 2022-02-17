@@ -1,0 +1,7 @@
+read_6 read_write_6
+write_6 read_write_6
+read_10 read_write_10
+write_10 read_write_10
+read_16 read_write_16
+write_16 read_write_16
+unmap vscsi_unmap

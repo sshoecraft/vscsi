@@ -1,0 +1,46 @@
+[  119.428211] scsi 2:0:2:0: CD-ROM            PLEXTOR  CD-ROM PX-32CS 1.01 PQ: 0 ANSI: 2
+[  119.428238]  target2:0:2: Beginning Domain Validation
+[  119.430667]  target2:0:2: FAST-20 SCSI 20.0 MB/s ST (50 ns, offset 15)
+[  119.431991]  target2:0:2: Domain Validation skipping write tests
+[  119.431996]  target2:0:2: Ending Domain Validation
+[  119.438401] scsi 2:0:3:0: CD-ROM            PLEXTOR  CD-ROM PX-32CS 1.01 PQ: 0 ANSI: 2
+[  119.438424]  target2:0:3: Beginning Domain Validation
+[  119.440872]  target2:0:3: FAST-20 SCSI 20.0 MB/s ST (50 ns, offset 15)
+[  119.442135]  target2:0:3: Domain Validation skipping write tests
+[  119.442140]  target2:0:3: Ending Domain Validation
+[  119.448520] scsi 2:0:4:0: CD-ROM            PLEXTOR  CD-ROM PX-32CS 1.01 PQ: 0 ANSI: 2
+[  119.448545]  target2:0:4: Beginning Domain Validation
+[  119.450979]  target2:0:4: FAST-20 SCSI 20.0 MB/s ST (50 ns, offset 15)
+[  119.452294]  target2:0:4: Domain Validation skipping write tests
+[  119.452299]  target2:0:4: Ending Domain Validation
+[  119.458705] scsi 2:0:5:0: CD-ROM            PLEXTOR  CD-ROM PX-32CS 1.01 PQ: 0 ANSI: 2
+[  119.458731]  target2:0:5: Beginning Domain Validation
+[  119.461149]  target2:0:5: FAST-20 SCSI 20.0 MB/s ST (50 ns, offset 15)
+[  119.462456]  target2:0:5: Domain Validation skipping write tests
+[  119.462460]  target2:0:5: Ending Domain Validation
+[  119.470054] scsi 2:0:6:0: Medium Changer    JVC      CD-CHG MC-1200 1.02 PQ: 0 ANSI: 2
+[  119.470080]  target2:0:6: Beginning Domain Validation
+[  119.501913]  target2:0:6: Ending Domain Validation
+
+  Vendor: HP        Model: OPEN-V            Rev: 5001
+  Type:   Direct-Access                      ANSI SCSI revision: 02
+
+scsi1 : sym-2.2.2
+  Vendor: IBM       Model: DMVS18D           Rev: HP07
+  Type:   Direct-Access                      ANSI SCSI revision: 03
+ target1:0:0: tagged command queuing enabled, command queue depth 16.
+ target1:0:0: Beginning Domain Validation
+ target1:0:0: asynchronous.
+ target1:0:0: wide asynchronous.
+ target1:0:0: FAST-20 WIDE SCSI 40.0 MB/s ST (50 ns, offset 31)
+ target1:0:0: Domain Validation skipping write tests
+ target1:0:0: Ending Domain Validation
+  Vendor: IBM       Model: DMVS18D           Rev: HP07
+  Type:   Direct-Access                      ANSI SCSI revision: 03
+ target1:0:2: tagged command queuing enabled, command queue depth 16.
+ target1:0:2: Beginning Domain Validation
+ target1:0:2: asynchronous.
+ target1:0:2: wide asynchronous.
+ target1:0:2: FAST-20 WIDE SCSI 40.0 MB/s ST (50 ns, offset 31)
+ target1:0:2: Domain Validation skipping write tests
+ target1:0:2: Ending Domain Validation

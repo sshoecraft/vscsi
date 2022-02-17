@@ -1,0 +1,41 @@
+
+FILE := file_pre.c file_net.c file_local.c file_uml.c file_post.c
+
+SRCS := head.c dump.c response.c $(FILE) rom.c device.c check.c
+SRCS += pass.c
+#include Makefile.funcs
+SRCS += ops.c queue.c config.c reset.c spi.c adapter.c setup.c driver_pci.c
+#KERN=/lib/modules/`uname -r`/build
+KERN=/usr/src/uml
+
+#OBJS=$(SRCS:%.c=%.o)
+OBJS=vscsi.o
+
+#	make -I`pwd` -C /lib/modules/`uname -r`/build SUBDIRS=`pwd` modules
+#	make -I`pwd` -C $(KERN) SUBDIRS=`pwd` KBUILD_VERBOSE=1 modules
+
+all: vscsi.c
+	make -I`pwd` -C $(KERN) SUBDIRS=`pwd`
+
+vscsi.c: $(SRCS) Makefile
+	cat $(SRCS) > vscsi.c
+
+rom.c: rom/mkrom.c
+	(cd rom; make)
+
+ops.c::
+	(cd ops; make)
+
+#modules:
+#	gcc -D__KERNEL__ -I/usr/src/linux-2.4/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common  -Wno-unused -fomit-frame-pointer -pipe -freorder-blocks -mpreferred-stack-boundary=2 -march=pentium3 -DMODULE -DMODVERSIONS -include /usr/src/linux-2.4/include/linux/modversions.h -I/usr/src/linux-2.4/drivers/scsi -nostdinc -iwithprefix include -DKBUILD_BASENAME=ibmphp_res  -c -o vscsi.o vscsi.c
+
+test: vscsi.c
+	(cd ../linux-2.6.25.9; sh m)
+#	insmod vscsi.ko vscsi=disk:/test/fedora/fedora.img,cd:/test/coe.iso
+#	rmmod vscsi
+
+clean:
+	rm -f rom.c ops.c vscsi.c *.ko $(OBJS) *.mod.* Module.symvers
+
+#obj-m := $(OBJS)
+obj-$(CONFIG_VSCSI) += vscsi.o

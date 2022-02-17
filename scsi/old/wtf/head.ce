@@ -1,0 +1,89 @@
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/version.h>
+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,9)
+#include <linux/platform_device.h>
+#endif
+
+#include <asm/system.h>
+#include <asm/string.h>
+#include <asm/pgtable.h>
+
+#include <scsi/scsi.h>
+#include <scsi/scsi_cmnd.h>
+#include <scsi/scsi_device.h>
+#include <scsi/scsi_host.h>
+#include <scsi/scsi_tcq.h>
+#include <scsi/scsi_transport.h>
+
+#define VSCSI_VERSION_MAJOR 1
+#define VSCSI_VERSION_MINOR 0
+#define VSCSI_VERSION "1.00"
+
+#if defined(CONFIG_UML)
+#include "os.h"
+#endif
+
+MODULE_AUTHOR("Steve Shoecraft <sshoecraft@earthlink.net>");
+MODULE_DESCRIPTION("Virtual SCSI Driver " VSCSI_VERSION);
+MODULE_LICENSE("GPL");
+//MODULE_ALIAS("platform:vscsi");
+
+/* Sense codes */
+#define LOGICAL_UNIT_NOT_READY 0x4
+#define INVALID_FIELD_IN_CDB 0x24
+#define MEDIUM_NOT_PRESENT 0x3a
+
+/* Additional Sense Codes */
+#define CAUSE_NOT_REPORTABLE 0x00
+#define INITIALIZING_COMMAND_REQUIRED 0x02
+#define FORMAT_IN_PROGRESS 0x04
+
+#ifdef min
+#undef min
+#endif
+#define min(a,b) ((a) < (b) ? (a) : (b))
+
+#ifdef max
+#undef max
+#endif
+#define max(a,b) ((a) < (b) ? (b) : (a))
+
+static unsigned char temp[192];
+
+/* 0 - dont check command, 1 check command */
+#define VSCSI_STRICT 0
+
+#if 0
+struct virtual_dev {
+	struct list_head global_list;	/* node in list of all virtual devices */
+	struct list_head bus_list;	/* node in per-bus list */
+	struct virtual_bus *bus;	/* bus this device is on */
+	struct virtual_driver *driver;	/* which driver has allocated this device */
+	struct device dev;		/* Generic device interface */
+};
+
+struct virtual_driver {
+	struct list_head node;
+	char *name;
+	const struct virtual_device_id *id_table;	/* must be non-NULL for probe to be called */
+	int (*probe)  (struct virtual_dev *dev, const struct virtual_device_id *id); /* New device inserted */
+	void (*remove) (struct virtual_dev *dev);	/* Device removed (NULL if not a hot-plug capable driver) */
+	int (*suspend) (struct virtual_dev *dev, pm_message_t state); /* Device suspended */
+#if 0
+        int  (*suspend_late) (struct virtual_dev *dev, pm_message_t state);
+        int  (*resume_early) (struct virtual_dev *dev);
+#endif
+        int  (*resume) (struct virtual_dev *dev);                   /* Device woken up */
+        void (*shutdown) (struct virtual_dev *dev);
+
+        struct virtual_error_handlers *err_handler;
+        struct device_driver    driver;
+//        struct virtual_dynids dynids;
+};
+
+#define to_virtual_driver(drv) container_of(drv, struct virtual_driver, driver)
+#define to_virtual_dev(n) container_of(n, struct virtual_dev, dev)
+#endif

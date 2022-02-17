@@ -1,0 +1,176 @@
++=============================================================================+
+|           D - DIRECT ACCESS DEVICE                       Device Column Key  |
+|           .T - SEQUENTIAL ACCESS DEVICE                  M = Mandatory      |
+|           . L - PRINTER DEVICE                           O = Optional       |
+|           .  P - PROCESSOR DEVICE                        V = Vendor Specific|
+|           .  .W - WRITE ONCE READ MULTIPLE DEVICE        R = Reserved       |
+|           .  . R - READ ONLY (CD-ROM) DEVICE                                |
+|           .  .  S - SCANNER DEVICE                                          |
+|           .  .  .O - OPTICAL MEMORY DEVICE                                  |
+|           .  .  . M - MEDIA CHANGER DEVICE                                  |
+|           .  .  .  C - COMMUNICATION DEVICE                                 |
+|           .  .  .  .                                                        |
+|        OP DTLPWRSOMC Description                                            |
+|----------+----------+-------------------------------------------------------|
+|        00 MMMMMMMMMM TEST UNIT READY                                        |
+|        01  M         REWIND                                                 |
+|        01 O V OO OO  REZERO UNIT                                            |
+|        02 VVVVVV  V                                                         |
+|        03 MMMMMMMMMM REQUEST SENSE                                          |
+|        04   O        FORMAT                                                 |
+|        04 M      O   FORMAT UNIT                                            |
+|        05 VMVVVV  V  READ BLOCK LIMITS                                      |
+|        06 VVVVVV  V                                                         |
+|        07         O  INITIALIZE ELEMENT STATUS                              |
+|        07 OVV O  OV  REASSIGN BLOCKS                                        |
+|        08          M GET MESSAGE(06)                                        |
+|        08 OMV OO OV  READ(06)                                               |
+|        08    O       RECEIVE                                                |
+|        09 VVVVVV  V                                                         |
+|        0A   M        PRINT                                                  |
+|        0A          M SEND MESSAGE(06)                                       |
+|        0A    M       SEND(06)                                               |
+|        0A OM  O  OV  WRITE(06)                                              |
+|        0B O   OO OV  SEEK(06)                                               |
+|        0B   O        SLEW AND PRINT                                         |
+|        0C VVVVVV  V                                                         |
+|        0D VVVVVV  V                                                         |
+|        0E VVVVVV  V                                                         |
+|        0F VOVVVV  V  READ REVERSE                                           |
+|        10   O O      SYNCHRONIZE BUFFER                                     |
+|        10 VM VVV     WRITE FILEMARKS                                        |
+|        11 VMVVVV     SPACE                                                  |
+|        12 MMMMMMMMMM INQUIRY                                                |
+|        13 VOVVVV     VERIFY(06)                                             |
+|        14 VOOVVV     RECOVER BUFFERED DATA                                  |
+|        15 OMO OOOOOO MODE SELECT(06)                                        |
+|        16 M   MM MO  RESERVE                                                |
+|        16  MM   M    RESERVE UNIT                                           |
+|        17 M   MM MO  RELEASE                                                |
+|        17  MM   M    RELEASE UNIT                                           |
+|        18 OOOOOOOO   COPY                                                   |
+|        19 VMVVVV     ERASE                                                  |
+|        1A OMO OOOOOO MODE SENSE(06)                                         |
+|        1B  O         LOAD UNLOAD                                            |
+|        1B       O    SCAN                                                   |
+|        1B   O        STOP PRINT                                             |
+|        1B O   OO O   STOP START UNIT                                        |
+|        1C OOOOOOOOOO RECEIVE DIAGNOSTIC RESULTS                             |
+|        1D MMMMMMMMMM SEND DIAGNOSTIC                                        |
+|        1E OO  OO OO  PREVENT ALLOW MEDIUM REMOVAL                           |
+|        1F                                                                   |
+|        20 V   VV V                                                          |
+|        21 V   VV V                                                          |
+|        22 V   VV V                                                          |
+|        23 V   VV V                                                          |
+|        24 V   VVM    SET WINDOW                                             |
+|        25       O    GET WINDOW                                             |
+|        25 M   M  M   READ CAPACITY                                          |
+|        25      M     READ CD-ROM CAPACITY                                   |
+|        26 V   VV                                                            |
+|        27 V   VV                                                            |
+|        28          O GET MESSAGE(10)                                        |
+|        28 M   MMMM   READ(10)                                               |
+|        29 V   VV O   READ GENERATION                                        |
+|        2A          O SEND MESSAGE(10)                                       |
+|        2A       O    SEND(10)                                               |
+|        2A M   M  M   WRITE(10)                                              |
+|        2B  O         LOCATE                                                 |
+|        2B         O  POSITION TO ELEMENT                                    |
+|        2B O   OO O   SEEK(10)                                               |
+|        2C V      O   ERASE(10)                                              |
+|        2D V   O  O   READ UPDATED BLOCK                                     |
+|        2E O   O  O   WRITE AND VERIFY(10)                                   |
+|        2F O   OO O   VERIFY(10)                                             |
+|        30 O   OO O   SEARCH DATA HIGH(10)                                   |
+|        31       O    OBJECT POSITION                                        |
+|        31 O   OO O   SEARCH DATA EQUAL(10)                                  |
+|        32 O   OO O   SEARCH DATA LOW(10)                                    |
+|        33 O   OO O   SET LIMITS(10)                                         |
+|        34       O    GET DATA BUFFER STATUS                                 |
+|        34 O   OO O   PRE-FETCH                                              |
+|        34  O         READ POSITION                                          |
+|        35 O   OO O   SYNCHRONIZE CACHE                                      |
+|        36 O   OO O   LOCK UNLOCK CACHE                                      |
+|        37 O      O   READ DEFECT DATA(10)                                   |
+|        38     O  O   MEDIUM SCAN                                            |
+|        39 OOOOOOOO   COMPARE                                                |
+|        3A OOOOOOOO   COPY AND VERIFY                                        |
+|        3B OOOOOOOOOO WRITE BUFFER                                           |
+|        3C OOOOOOOOOO READ BUFFER                                            |
+|        3D     O  O   UPDATE BLOCK                                           |
+|        3E O   OO O   READ LONG                                              |
+|        3F O   O  O   WRITE LONG                                             |
+|        40 OOOOOOOOOO CHANGE DEFINITION                                      |
+|        41 O          WRITE SAME                                             |
+|        42      O     READ SUB-CHANNEL                                       |
+|        43      O     READ TOC                                               |
+|        44      O     READ HEADER                                            |
+|        45      O     PLAY AUDIO(10)                                         |
+|        46                                                                   |
+|        47      O     PLAY AUDIO MSF                                         |
+|        48      O     PLAY AUDIO TRACK INDEX                                 |
+|        49      O     PLAY TRACK RELATIVE(10)                                |
+|        4A                                                                   |
+|        4B      O     PAUSE RESUME                                           |
+|        4C OOOOOOOOOO LOG SELECT                                             |
+|        4D OOOOOOOOOO LOG SENSE                                              |
+|        4E                                                                   |
+|        4F                                                                   |
+|        50                                                                   |
+|        51                                                                   |
+|        52                                                                   |
+|        53                                                                   |
+|        54                                                                   |
+|        55 OOO OOOOOO MODE SELECT(10)                                        |
+|        56                                                                   |
+|        57                                                                   |
+|        58                                                                   |
+|        59                                                                   |
+|        5A OOO OOOOOO MODE SENSE(10)                                         |
+|        5B                                                                   |
+|        5C                                                                   |
+|        5D                                                                   |
+|        5E                                                                   |
+|        5F                                                                   |
+|        A0                                                                   |
+|        A1                                                                   |
+|        A2                                                                   |
+|        A3                                                                   |
+|        A4                                                                   |
+|        A5         M  MOVE MEDIUM                                            |
+|        A5      O     PLAY AUDIO(12)                                         |
+|        A6         O  EXCHANGE MEDIUM                                        |
+|        A7                                                                   |
+|        A8          O GET MESSAGE(12)                                        |
+|        A8     OO O   READ(12)                                               |
+|        A9      O     PLAY TRACK RELATIVE(12)                                |
+|        AA          O SEND MESSAGE(12)                                       |
+|        AA     O  O   WRITE(12)                                              |
+|        AB                                                                   |
+|        AC        O   ERASE(12)                                              |
+|        AD                                                                   |
+|        AE     O  O   WRITE AND VERIFY(12)                                   |
+|        AF     OO O   VERIFY(12)                                             |
+|        B0     OO O   SEARCH DATA HIGH(12)                                   |
+|        B1     OO O   SEARCH DATA EQUAL(12)                                  |
+|        B2     OO O   SEARCH DATA LOW(12)                                    |
+|        B3     OO O   SET LIMITS(12)                                         |
+|        B4                                                                   |
+|        B5                                                                   |
+|        B5         O  REQUEST VOLUME ELEMENT ADDRESS                         |
+|        B6                                                                   |
+|        B6         O  SEND VOLUME TAG                                        |
+|        B7        O   READ DEFECT DATA(12)                                   |
+|        B8                                                                   |
+|        B8         O  READ ELEMENT STATUS                                    |
+|        B9                                                                   |
+|        BA                                                                   |
+|        BB                                                                   |
+|        BC                                                                   |
+|        BD                                                                   |
+|        BE                                                                   |
+|        BF                                                                   |
++=============================================================================+
+
+

@@ -1,0 +1,21 @@
+
+static int scsi_execute(scsi_device_t *dp, unsigned char *cdb, void *buffer, int size) {
+	scsi_funcptr_t *func;
+	int num,byte,mask;
+	struct scsi_cmnd *scp;
+
+	num = cdb[0];
+	if (num > MAX_FUNC) goto bad_cmd;
+	byte = num / 8;
+	mask = 1 << (num % 8);
+	func = 0;
+	if (scsi_commands[dp->type][byte] & mask)
+		func = scsi_funcs[num];
+
+	scp = 0;
+	if (func) return func(scp);
+
+bad_cmd:
+	/* XXX check condition */
+	return 1;
+}

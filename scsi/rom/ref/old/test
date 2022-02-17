@@ -1,0 +1,10 @@
+for i in *_std
+do
+	n=`./std2src $i`
+	echo "#include \"ms.h\"" > t.c
+	echo "#include \"$i.c\"" >> t.c
+	echo "#include <stdio.h>" >> t.c
+	echo "int main(void) { printf(\"$n size: %d\n\", sizeof($n)); return 0; }" >> t.c
+	cc -o t t.c
+	./t
+done

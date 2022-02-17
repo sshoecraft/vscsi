@@ -1,0 +1,10 @@
+SRCS += funcs/0xBFtest_unit_ready.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.cread_6.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.cread_6.cinquiry.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.cread_6.cinquiry.csend_diagnostic.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.cread_6.cinquiry.csend_diagnostic.cread_capacity_10.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.cread_6.cinquiry.csend_diagnostic.cread_capacity_10.cread_10.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.cread_6.cinquiry.csend_diagnostic.cread_capacity_10.cread_10.cread_16.c
+SRCS += funcs/0xBFtest_unit_ready.crequest_sense.cformat_unit.cread_6.cinquiry.csend_diagnostic.cread_capacity_10.cread_10.cread_16.creport_luns.c
